@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
@@ -58,9 +59,17 @@ class HomeFragment : Fragment() {
         borderLayoutParams.gravity = Gravity.CENTER
         binding.imageView.layoutParams = borderLayoutParams
 
+        // Resize max height
+        binding.imageView.maxPageHeight = pageHeight
+        binding.imageView.maxPageWidth = pageWidth
+
+        // Resize min height
+        binding.imageView.minPageHeight = (pageHeight / 4)
+        binding.imageView.minPageWidth = (pageWidth / 3)
 
         binding.button.setOnClickListener {
             try {
+                binding.imageView.removeStrokeColor()
                 val frameBitmap = getBitmapFromView(binding.bgPage)
                 viewModel.imageBitmap.value = frameBitmap
                 findNavController().navigate(R.id.action_homeFragment_to_diplayFragment)
