@@ -25,6 +25,8 @@ class HomeFragment : Fragment() {
     private lateinit var viewModel: HomeViewModel
 
     private val PICK_IMAGE_REQUEST = 1
+    private var pageHeight = 0
+    private var pageWidth = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,28 +42,16 @@ class HomeFragment : Fragment() {
 
         viewModel = (activity as MainActivity).viewModel
 
-        val pageHeight = PageSize.A4.height.toInt()
-        val pageWidth = PageSize.A4.width.toInt()
+        pageHeight = PageSize.A4.height.toInt()
+        pageWidth = PageSize.A4.width.toInt()
         Log.d("pageHeight", pageHeight.toString())
         Log.d("pageWidth", pageWidth.toString())
         val pageLayoutParams = FrameLayout.LayoutParams(pageWidth, pageHeight)
         pageLayoutParams.gravity = Gravity.CENTER
         binding.bgPage.layoutParams = pageLayoutParams
 
-        // Get the dimensions of ImageViewBorder (imageView)
         val tempBitmap = (binding.imageView.drawable as BitmapDrawable).bitmap
-        val imageViewHeight = tempBitmap.height
-        val imageViewWidth = tempBitmap.width
-        val padding = 70
-
-        Log.d("imageViewHeight", imageViewHeight.toString())
-        Log.d("imageViewWidth", imageViewWidth.toString())
-
-        // Set the dimensions of ImageViewBorder based on imageView
-        val borderLayoutParams =
-            FrameLayout.LayoutParams(imageViewWidth - padding, imageViewHeight - padding)
-        borderLayoutParams.gravity = Gravity.CENTER
-        binding.imageView.layoutParams = borderLayoutParams
+        setImageSize(tempBitmap)
 
         // Resize max height & width
         binding.imageView.maxPageHeight = pageHeight
@@ -110,7 +100,25 @@ class HomeFragment : Fragment() {
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
             val selectedImage = data.data
             val bitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, selectedImage)
-            binding.imageView.setImageBitmap(bitmap)
+            val scaledBitmap: Bitmap = bitmap.scaledBitmap(pageWidth, pageHeight)
+            binding.imageView.setImageBitmap(scaledBitmap)
+            setImageSize(scaledBitmap)
         }
+    }
+
+    private fun setImageSize(tempBitmap: Bitmap) {
+        // Get the dimensions of ImageViewBorder (imageView)
+        val imageViewHeight = tempBitmap.height
+        val imageViewWidth = tempBitmap.width
+        val padding = 70
+
+        Log.d("imageViewHeight", imageViewHeight.toString())
+        Log.d("imageViewWidth", imageViewWidth.toString())
+
+        // Set the dimensions of ImageViewBorder based on imageView
+        val borderLayoutParams =
+            FrameLayout.LayoutParams(imageViewWidth - padding, imageViewHeight - padding)
+        borderLayoutParams.gravity = Gravity.CENTER
+        binding.imageView.layoutParams = borderLayoutParams
     }
 }
