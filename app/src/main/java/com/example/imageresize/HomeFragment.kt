@@ -1,17 +1,21 @@
 package com.example.imageresize
 
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.drawable.BitmapDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.imageresize.databinding.FragmentHomeBinding
 import com.itextpdf.kernel.geom.PageSize
+
 
 class HomeFragment : Fragment() {
     private lateinit var binding: FragmentHomeBinding
@@ -54,9 +58,28 @@ class HomeFragment : Fragment() {
         borderLayoutParams.gravity = Gravity.CENTER
         binding.imageView.layoutParams = borderLayoutParams
 
+
         binding.button.setOnClickListener {
-            viewModel.imageBitmap.value = tempBitmap
-            findNavController().navigate(R.id.action_homeFragment_to_diplayFragment)
+            try {
+                val frameBitmap = getBitmapFromView(binding.bgPage)
+                viewModel.imageBitmap.value = frameBitmap
+                findNavController().navigate(R.id.action_homeFragment_to_diplayFragment)
+            } catch (e: Exception) {
+                Log.d("Error", e.message.toString())
+            }
         }
+    }
+
+    private fun getBitmapFromView(view: View): Bitmap {
+        val returnedBitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(returnedBitmap)
+        val bgDrawable = view.background
+        if (bgDrawable != null) {
+            bgDrawable.draw(canvas)
+        } else {
+            canvas.drawColor(Color.WHITE)
+        }
+        view.draw(canvas)
+        return returnedBitmap
     }
 }
