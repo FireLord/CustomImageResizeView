@@ -10,6 +10,7 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.ContextCompat
 
 class ImageViewBorder(context: Context, attrs: AttributeSet?) : AppCompatImageView(context, attrs) {
     private val paint = Paint()
@@ -23,7 +24,7 @@ class ImageViewBorder(context: Context, attrs: AttributeSet?) : AppCompatImageVi
     var minPageHeight = 200
     var maxPageHeight = 842
     var maxPageWidth = 594
-    private val cornerDrawable: Drawable = context.resources.getDrawable(R.drawable.resize_corner_circle)
+    private val cornerDrawable: Drawable = ContextCompat.getDrawable(context, R.drawable.resize_corner_circle)!!
 
     init {
         paint.color = Color.RED  // Set the color of the line
