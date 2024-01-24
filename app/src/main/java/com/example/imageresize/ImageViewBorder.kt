@@ -66,7 +66,7 @@ class ImageViewBorder(context: Context, attrs: AttributeSet?) : AppCompatImageVi
                     // Adjust new width and height based on the aspect ratio
                     val newWidth = originalWidth + deltaX
                     val newHeight = originalHeight + deltaY
-                    if ((newWidth.toInt() in minPageWidth..maxPageWidth && newHeight.toInt() in minPageHeight..maxPageHeight)) {
+                    if (newWidth.toInt() in minPageWidth..maxPageWidth && newHeight.toInt() in minPageHeight..maxPageHeight) {
                         val adjustedWidth = newWidth.coerceAtLeast(minPageWidth.toFloat())
                         val adjustedHeight = adjustedWidth / aspectRatio
 
