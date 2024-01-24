@@ -10,14 +10,13 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatImageView
-import androidx.core.content.res.ResourcesCompat
 
 class ImageViewBorder(context: Context, attrs: AttributeSet?) : AppCompatImageView(context, attrs) {
     private val paint = Paint()
     private var startX = 0f
     private var startY = 0f
     private var resizing = false
-    private val padding = 10  // Adjust the padding value as needed
+    private val padding = 10
     private var originalWidth = 0
     private var originalHeight = 0
     var minPageWidth = 300
@@ -33,6 +32,8 @@ class ImageViewBorder(context: Context, attrs: AttributeSet?) : AppCompatImageVi
         paint.strokeJoin = Paint.Join.ROUND
         paint.strokeCap = Paint.Cap.ROUND
         paint.isAntiAlias = true
+
+        cornerDrawable.setTint(Color.RED)
     }
 
     override fun onDraw(canvas: Canvas) {
@@ -88,9 +89,17 @@ class ImageViewBorder(context: Context, attrs: AttributeSet?) : AppCompatImageVi
             }
 
             MotionEvent.ACTION_UP -> {
-                resizing = false
+                performClick()
             }
         }
+        return true
+    }
+
+    override fun performClick(): Boolean {
+        super.performClick()
+
+        resizing = false
+
         return true
     }
 
@@ -116,5 +125,6 @@ class ImageViewBorder(context: Context, attrs: AttributeSet?) : AppCompatImageVi
 
     fun removeStrokeColor() {
         paint.color = Color.TRANSPARENT
+        cornerDrawable.setTint(Color.TRANSPARENT)
     }
 }
