@@ -5,10 +5,12 @@ import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
+import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatImageView
+import androidx.core.content.res.ResourcesCompat
 
 class ImageViewBorder(context: Context, attrs: AttributeSet?) : AppCompatImageView(context, attrs) {
     private val paint = Paint()
@@ -22,6 +24,7 @@ class ImageViewBorder(context: Context, attrs: AttributeSet?) : AppCompatImageVi
     var minPageHeight = 200
     var maxPageHeight = 842
     var maxPageWidth = 594
+    private val cornerDrawable: Drawable = context.resources.getDrawable(R.drawable.resize_corner_circle)
 
     init {
         paint.color = Color.RED  // Set the color of the line
@@ -43,6 +46,12 @@ class ImageViewBorder(context: Context, attrs: AttributeSet?) : AppCompatImageVi
             height.toFloat(),
             paint
         )
+
+        // Draw corners at each corner of the rectangle
+        drawCorner(canvas, padding.toFloat(), padding.toFloat())
+        drawCorner(canvas, (width - padding).toFloat(), padding.toFloat())
+        drawCorner(canvas, padding.toFloat(), (height - padding).toFloat())
+        drawCorner(canvas, (width - padding).toFloat(), (height - padding).toFloat())
     }
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
@@ -93,6 +102,16 @@ class ImageViewBorder(context: Context, attrs: AttributeSet?) : AppCompatImageVi
             (height - padding).toFloat()
         )
         return rect.contains(x, y)
+    }
+
+    private fun drawCorner(canvas: Canvas, x: Float, y: Float) {
+        cornerDrawable.setBounds(
+            (x - cornerDrawable.intrinsicWidth / 2).toInt(),
+            (y - cornerDrawable.intrinsicHeight / 2).toInt(),
+            (x + cornerDrawable.intrinsicWidth / 2).toInt(),
+            (y + cornerDrawable.intrinsicHeight / 2).toInt()
+        )
+        cornerDrawable.draw(canvas)
     }
 
     fun removeStrokeColor() {
