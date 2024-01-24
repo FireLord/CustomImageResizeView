@@ -16,6 +16,8 @@ class ImageViewBorder(context: Context, attrs: AttributeSet?) : AppCompatImageVi
     private var startY = 0f
     private var resizing = false
     private val padding = 10  // Adjust the padding value as needed
+    private var originalWidth = 0
+    private var originalHeight = 0
     var minPageWidth = 300
     var minPageHeight = 200
     var maxPageHeight = 842
@@ -49,23 +51,30 @@ class ImageViewBorder(context: Context, attrs: AttributeSet?) : AppCompatImageVi
                 startX = event.x
                 startY = event.y
                 resizing = isResizingArea(startX, startY)
+                originalWidth = width
+                originalHeight = height
             }
 
             MotionEvent.ACTION_MOVE -> {
                 if (resizing) {
-                    val newWidth = width + (event.x - startX)
-                    val newHeight = height + (event.y - startY)
-                    Log.d("newHeight", newHeight.toString())
+                    val deltaX = event.x - startX
+                    val deltaY = event.y - startY
 
+                    // Calculate new dimensions while maintaining aspect ratio
+                    val aspectRatio = originalWidth.toFloat() / originalHeight.toFloat()
 
+                    // Adjust new width and height based on the aspect ratio
+                    val newWidth = originalWidth + deltaX
+                    val newHeight = originalHeight + deltaY
                     if ((newWidth.toInt() in minPageWidth..maxPageWidth && newHeight.toInt() in minPageHeight..maxPageHeight)) {
-                        layoutParams.width = newWidth.toInt()
-                        layoutParams.height = newHeight.toInt()
+                        val adjustedWidth = newWidth.coerceAtLeast(minPageWidth.toFloat())
+                        val adjustedHeight = adjustedWidth / aspectRatio
+
+                        layoutParams.width = adjustedWidth.toInt()
+                        layoutParams.height = adjustedHeight.toInt()
+
                         requestLayout()
                     }
-
-                    startX = event.x
-                    startY = event.y
                 }
             }
 
