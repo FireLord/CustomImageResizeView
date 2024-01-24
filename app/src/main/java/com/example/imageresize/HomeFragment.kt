@@ -59,11 +59,11 @@ class HomeFragment : Fragment() {
         borderLayoutParams.gravity = Gravity.CENTER
         binding.imageView.layoutParams = borderLayoutParams
 
-        // Resize max height
+        // Resize max height & width
         binding.imageView.maxPageHeight = pageHeight
         binding.imageView.maxPageWidth = pageWidth
 
-        // Resize min height
+        // Resize min height & width
         binding.imageView.minPageHeight = (pageHeight / 4)
         binding.imageView.minPageWidth = (pageWidth / 3)
 
